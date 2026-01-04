@@ -1,15 +1,18 @@
-import { FaFacebookF, FaInstagram, FaYoutube } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaFacebookF, FaInstagram, FaYoutube, FaMapMarkerAlt, FaWhatsapp, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
+import logo from "../assets/logos.png"; // adjust path as needed
 
 export default function Footer() {
   return (
     <footer className="bg-gradient-to-b from-gray-900 via-black to-gray-900 text-gray-300 pt-12 pb-6 mt-16">
-      
+
       {/* Top Section */}
       <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center md:text-left">
 
         {/* Brand */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
+          <img src={logo} alt="Highland Escapes Logo" className="h-16 w-auto mb-3" />
           <h2 className="text-2xl font-bold text-white mb-3">
             Highland Escapes Travelers
           </h2>
@@ -20,21 +23,34 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
           <h3 className="text-xl font-semibold text-white mb-3">Quick Links</h3>
           <ul className="space-y-2">
-            <li className="hover:text-white cursor-pointer transition">Home</li>
-            <li className="hover:text-white cursor-pointer transition">Tours</li>
-            <li className="hover:text-white cursor-pointer transition">Destinations</li>
-            <li className="hover:text-white cursor-pointer transition">Contact</li>
+            <li>
+              <Link to="/" className="hover:text-white transition">Home</Link>
+            </li>
+            <li>
+              <Link to="/about" className="hover:text-white transition">About</Link>
+            </li>
+            <li>
+              <Link to="/tours" className="hover:text-white transition">Tours</Link>
+            </li>
+            <li>
+              <Link to="/destinations" className="hover:text-white transition">Destinations</Link>
+            </li>
+            <li>
+              <Link to="/terms-policies" className="hover:text-white transition">Terms & Policies</Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-white transition">Contact</Link>
+            </li>
           </ul>
         </div>
 
-        {/* Social Icons */}
-        <div>
-          <h3 className="text-xl font-semibold text-white mb-3">Follow Us</h3>
-          <div className="flex justify-center md:justify-start gap-4">
-
+        {/* Social & Contact */}
+        <div className="flex flex-col items-center md:items-start">
+          <h3 className="text-xl font-semibold text-white mb-3">Connect With Us</h3>
+          <div className="flex justify-center md:justify-start gap-4 mb-4">
             {/* Facebook */}
             <a 
               href="https://www.facebook.com/people/Highland-Escapes-Travelers/pfbid0366S8KuYVR8yETWDJgSkZa6XD8BmiKefRuvMXLnD2gffMpNHRWzqr3PEKDPYpETUVl/"
@@ -75,6 +91,37 @@ export default function Footer() {
               <FaYoutube size={22} />
             </a>
 
+            {/* WhatsApp */}
+            <a 
+              href="https://wa.me/923043461111"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 bg-green-600 rounded-full hover:bg-green-700 transition cursor-pointer"
+            >
+              <FaWhatsapp size={20} />
+            </a>
+
+            {/* Location */}
+            {/* Location */}
+<a 
+  href="https://maps.app.goo.gl/T4hRfUVscPJhYGgs9?g_st=aw"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="p-3 bg-red-600 rounded-full hover:bg-red-700 transition cursor-pointer"
+>
+  <FaMapMarkerAlt size={20} />
+</a>
+
+          </div>
+
+          {/* Contact Info */}
+          <div className="text-gray-400 space-y-1">
+            <p className="flex items-center gap-2">
+              <FaEnvelope /> highlandescapestravelers@gmail.com
+            </p>
+            <p className="flex items-center gap-2">
+              <FaPhoneAlt /> 923043461111
+            </p>
           </div>
         </div>
 
@@ -82,7 +129,7 @@ export default function Footer() {
 
       {/* Bottom Line */}
       <div className="border-t border-gray-700 mt-10 pt-4 text-center text-gray-400">
-        © 2025 Highland Escapes Travelers. All rights reserved.
+        © 2026 Highland Escapes Travelers. All rights reserved.
       </div>
 
     </footer>

@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 
 const tourCategories = [
-  { name: "Beach Tours", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" },
-  { name: "Adventure Trips", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80" },
-  { name: "City Tours", img: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80" },
-  { name: "Cultural Tours", img: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80" },
-  { name: "Nature Getaways", img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80" },
+  { name: "Honeymoon Tour", img: "/images/Honeymon.jpg" },
+  { name: "Adventure Tour", img: "/images/Hunza.jpg" },
+  { name: "International Tour", img: "/images/maldivess.jpg" },
+  { name: "Hiking and Trekking Tour", img: "/images/Skardu.jpg" },
+  { name: "Group Tour", img: "/images/Group.jpg" },
 ];
 
 export default function TourCategoriesSlider() {
@@ -15,7 +14,7 @@ export default function TourCategoriesSlider() {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % tourCategories.length);
-    }, 1000);
+    }, 2000); // adjust speed
     return () => clearInterval(interval);
   }, []);
 
@@ -69,14 +68,8 @@ export default function TourCategoriesSlider() {
 }
 
 function CategoryCard({ data }) {
-  // convert "Beach Tours" → "beach-tours"
-  const slug = data.name.toLowerCase().replace(/\s+/g, "-");
-
   return (
-    <Link
-      to={`/tours/category/${slug}`}
-      className="rounded-xl overflow-hidden shadow-lg group cursor-pointer block"
-    >
+    <div className="rounded-xl overflow-hidden shadow-lg group cursor-pointer block">
       <img
         src={data.img}
         alt={data.name}
@@ -85,6 +78,6 @@ function CategoryCard({ data }) {
       <div className="p-5 bg-white text-center">
         <h3 className="text-lg font-bold">{data.name}</h3>
       </div>
-    </Link>
+    </div>
   );
 }

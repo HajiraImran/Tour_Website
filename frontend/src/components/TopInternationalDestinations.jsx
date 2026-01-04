@@ -1,11 +1,16 @@
 import { useRef, useEffect, useState } from "react";
 
 const internationalDestinations = [
-  { name: "Maldives", img: "maldives.jpg" },
+  { name: "Maldives", img: "maldivess.jpg" },
   { name: "Turkey", img: "Turkey.jpg" },
   { name: "Paris", img: "paris.jpg" },
   { name: "Bali", img: "bali.jpg" },
   { name: "New Zealand", img: "newzealand.jpg" },
+   { name: "Malaysia", img: "Malaysia.jpg" },
+  { name: "Dubai", img: "Dubai.PNG" },
+  { name: "Thailand", img: "Thiland.jpg" },
+  { name: "Baku", img: "Baku.PNG" },
+
 ];
 
 export default function TopInternationalDestinations() {
@@ -61,7 +66,10 @@ export default function TopInternationalDestinations() {
           Top International Destinations
         </h2>
         <p className="text-gray-600 mb-12">
-          Explore world-class destinations for unforgettable international travel experiences.
+          Explore world-class destinations for unforgettable international travel experiences.  
+  Discover pristine beaches, breathtaking landscapes, and vibrant cultures across the globe.  
+  Whether you seek adventure, luxury, or relaxation, each destination promises memories that last a lifetime.  
+  Let your wanderlust guide you to the most iconic and hidden gems the world has to offer.  
         </p>
 
         <div
@@ -76,29 +84,33 @@ export default function TopInternationalDestinations() {
           onTouchEnd={onMouseUp}
         >
           {items.map((dest, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 min-w-[300px] md:min-w-[350px] lg:min-w-[400px] bg-white rounded-3xl shadow-2xl transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-3xl relative"
-            >
-              <div className="w-full h-80 md:h-96 lg:h-[28rem] overflow-hidden rounded-3xl">
-                <img
-                  src={`/images/${dest.img}`}
-                  alt={dest.name}
-                  className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent opacity-0 hover:opacity-100 transition duration-500 flex items-end p-4 rounded-3xl">
-                  <h3 className="text-white text-xl md:text-2xl font-bold drop-shadow-lg">
-                    {dest.name}
-                  </h3>
-                </div>
-              </div>
-              <div className="p-4">
-                <p className="text-gray-600 text-sm">
-                  Experience luxury, adventure, and unforgettable memories in {dest.name}.
-                </p>
-              </div>
-            </div>
-          ))}
+  <div
+    key={i}
+    className="flex-shrink-0 min-w-[250px] md:min-w-[300px] lg:min-w-[320px] bg-white rounded-3xl shadow-2xl transform transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-3xl relative"
+  >
+    <div className="w-full h-60 md:h-72 lg:h-80 overflow-hidden rounded-3xl relative">
+  <img
+    src={`/images/${dest.img}`}
+    alt={dest.name}
+    className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110"
+  />
+
+  {/* Always visible top-left name */}
+  <div className="absolute top-4 left-4 bg-black/60 px-3 py-1 rounded-md">
+    <h3 className="text-white text-lg md:text-xl font-semibold drop-shadow-lg">
+      {dest.name}
+    </h3>
+  </div>
+</div>
+
+    <div className="p-3">
+      <p className="text-gray-600 text-sm">
+        Experience luxury, adventure, and unforgettable memories in {dest.name}.
+      </p>
+    </div>
+  </div>
+))}
+
         </div>
       </div>
     </section>

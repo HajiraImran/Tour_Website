@@ -3,9 +3,19 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import bookingRoutes from "./routes/bookingRoutes.js";
+
 import authRoutes from "./routes/auth.js";
 import adminRoutes from "./routes/admin.js";
+import publicRoutes from "./routes/publicRoutes.js";
+
+import adminQuoteRoutes from "./routes/adminQuoteRoutes.js";
+import publicQuoteRoutes from "./routes/publicQuoteRoutes.js";
+import contactRoutes from "./routes/contact.js";
+
+
+
+
+
 
 
 
@@ -19,9 +29,16 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/bookings", bookingRoutes);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/public", publicRoutes);
+app.use("/api/admin", adminQuoteRoutes);
+app.use("/api/public", publicQuoteRoutes);
+app.use("/api/contact", contactRoutes);
+
+
+
 
 
 

@@ -1,44 +1,103 @@
 import express from "express";
 import Tour from "../models/Tour.js";
-import { verifyAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// --- Admin Dashboard ---
-router.get("/dashboard", verifyAdmin, (req, res) => {
-  res.json({ message: "Welcome to Admin Dashboard", adminId: req.admin.id });
-});
-
-// --- Get All Tours ---
-router.get("/tours", verifyAdmin, async (req, res) => {
+/* =========================
+   CREATE TOUR
+========================= */
+router.post("/tours", async (req, res) => {
   try {
-    const tours = await Tour.find();
-    res.json(tours);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+    const {
+      title,
+      description,
+      price,
+      category,
+      durationDays,
+      popular,
+      Normal,
+      TierTour,
+      image,
+      isInternational, // ✅ ADD
+      locations = [],
+      hotel = [],
+      startDate,
+      endDate,
+      itinerary = [],
+      services = [],
+      terms = [],
+      travelerInstructions = [],
+      cancellation = [],
+      refundPolicy = [],
+      fastFacts = [],
+    } = req.body;
 
-// --- Add a New Tour ---  <--- Yahan dalen
-router.post("/tours", verifyAdmin, async (req, res) => {
-  try {
-    const { title, description, img } = req.body;
+    if (!image) {
+      return res.status(400).json({ message: "Image URL is required" });
+    }
 
-    if (!title || !description)
-      return res.status(400).json({ message: "Title and description required" });
+    const tour = await Tour.create({
+      title,
+      description,
+      price,
+      category,
+      durationDays,
+      popular: popular || false,
+      Normal: Normal || false,
+      TierTour: TierTour || false,
+        isInternational: req.body.isInternational === true || req.body.isInternational === 'true', 
+      image,
+      locations,
+      hotel,
+      startDate,
+      endDate,
+      itinerary,
+      services,
+      terms,
+      travelerInstructions,
+      cancellation,
+      refundPolicy,
+      fastFacts,
+    });
 
-    const tour = await Tour.create({ title, description, img });
     res.status(201).json(tour);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// --- Delete a Tour ---
-router.delete("/tours/:id", verifyAdmin, async (req, res) => {
+/* =========================
+   GET ALL TOURS
+========================= */
+router.get("/tours", async (req, res) => {
+  try {
+    const tours = await Tour.find().sort({ createdAt: -1 });
+    res.json(tours);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/* =========================
+   GET SINGLE TOUR BY ID
+========================= */
+router.get("/tours/:id", async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id);
+    if (!tour) return res.status(404).json({ message: "Tour not found" });
+    res.json(tour);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/* =========================
+   DELETE TOUR
+========================= */
+router.delete("/tours/:id", async (req, res) => {
   try {
     await Tour.findByIdAndDelete(req.params.id);
-    res.json({ message: "Tour deleted successfully" });
+    res.json({ message: "Tour deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

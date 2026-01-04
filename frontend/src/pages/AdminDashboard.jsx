@@ -1,205 +1,269 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+/* ===============================
+   🔹 Cloudinary Upload
+================================ */
+const uploadToCloudinary = async (file) => {
+  const data = new FormData();
+  data.append("file", file);
+  data.append("upload_preset", "tour_uploads");
+
+  const res = await fetch(
+    "https://api.cloudinary.com/v1_1/dvyg3gxf6/image/upload",
+    { method: "POST", body: data }
+  );
+  const json = await res.json();
+  if (!json.secure_url) throw new Error("Image upload failed");
+  return json.secure_url;
+};
+
+/* ===============================
+   🔹 Reusable Tour Card
+================================ */
+const TourCard = ({ tour, onDelete }) => (
+  <div className="bg-white rounded-xl shadow">
+    <img src={tour.image} className="h-48 w-full object-cover rounded-t-xl" />
+    <div className="p-4">
+      <h3 className="font-bold">{tour.title}</h3>
+      <p className="text-sm">{tour.isInternational ? "🌍 International" : "🇵🇰 Domestic"}</p>
+      <p className="font-semibold mt-1">${tour.price}</p>
+      <button
+        onClick={() => onDelete(tour._id)}
+        className="mt-3 bg-red-600 text-white px-3 py-1 rounded"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+);
 
 export default function AdminDashboard() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+
   const [form, setForm] = useState({
     title: "",
     description: "",
-    image: "",
+    locations: "",
+    hotel: "",
+    startDate: "",
+    endDate: "",
     price: "",
+    category: "",
+    durationDays: "",
+    itinerary: "",
+    services: "",
+    terms: "",
+    travelerInstructions: "",
+    cancellation: "",
+    refundPolicy: "",
+    fastFacts: "",
     popular: false,
+    Normal: false,
+    TierTour: false,
+    isInternational: false,
   });
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
   const token = localStorage.getItem("adminToken");
 
+  /* ===============================
+     🔹 Fetch Tours
+  ================================ */
   useEffect(() => {
-    if (!token) return navigate("/admin/login");
+    if (!token) return window.location.href = "/admin/login";
 
-    const fetchTours = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/admin/tours", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setTours(res.data);
-        setLoading(false);
-      } catch (err) {
-        setMessage(err.response?.data?.message || "Error fetching tours");
-        setLoading(false);
-      }
-    };
-    fetchTours();
-  }, [navigate, token]);
+    axios
+      .get("http://localhost:5000/api/admin/tours", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => setTours(res.data))
+      .catch(() => alert("Failed to fetch tours"))
+      .finally(() => setLoading(false));
+  }, [token]);
 
+  /* ===============================
+     🔹 Handle Form Input Changes
+  ================================ */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+    if (type === "checkbox") setForm({ ...form, [name]: checked });
+    else if (type === "radio") setForm({ ...form, [name]: value === "true" });
+    else setForm({ ...form, [name]: value });
   };
 
+  /* ===============================
+     🔹 Add New Tour
+  ================================ */
   const handleAddTour = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.description) return alert("Title and description required!");
+    if (!imageFile) return alert("Please select an image");
+
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/tours", form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const imageUrl = await uploadToCloudinary(imageFile);
+
+      const payload = {
+        ...form,
+        image: imageUrl,
+        isInternational: form.isInternational === true,
+        locations: form.locations.split("\n").filter(Boolean),
+        hotel: form.hotel.split("\n").filter(Boolean),
+        itinerary: form.itinerary.split("\n").filter(Boolean),
+        services: form.services.split("\n").filter(Boolean),
+        terms: form.terms.split("\n").filter(Boolean),
+        travelerInstructions: form.travelerInstructions.split("\n").filter(Boolean),
+        cancellation: form.cancellation.split("\n").filter(Boolean),
+        refundPolicy: form.refundPolicy.split("\n").filter(Boolean),
+        fastFacts: form.fastFacts.split("\n").filter(Boolean),
+      };
+
+      const res = await axios.post(
+        "http://localhost:5000/api/admin/tours",
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       setTours([res.data, ...tours]);
-      setForm({ title: "", description: "", image: "", price: "", popular: false });
       setShowModal(false);
-    } catch (err) {
-      alert(err.response?.data?.message || "Error adding tour");
-    }
-  };
+      setImageFile(null);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this tour?")) return;
-    try {
-      await axios.delete(`http://localhost:5000/api/admin/tours/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      // Reset form
+      setForm({
+        title: "",
+        description: "",
+        locations: "",
+        hotel: "",
+        startDate: "",
+        endDate: "",
+        price: "",
+        category: "",
+        durationDays: "",
+        itinerary: "",
+        services: "",
+        terms: "",
+        travelerInstructions: "",
+        cancellation: "",
+        refundPolicy: "",
+        fastFacts: "",
+        popular: false,
+        Normal: false,
+        TierTour: false,
+        isInternational: false,
       });
-      setTours(tours.filter((tour) => tour._id !== id));
     } catch (err) {
-      alert(err.response?.data?.message || "Error deleting tour");
+      console.error(err);
+      alert("Error adding tour");
     }
   };
 
+  /* ===============================
+     🔹 Delete Tour
+  ================================ */
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this tour?")) return;
+    await axios.delete(`http://localhost:5000/api/admin/tours/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setTours(tours.filter((t) => t._id !== id));
+  };
+
+  /* ===============================
+     🔹 Logout
+  ================================ */
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
-    navigate("/admin/login");
+    window.location.href = "/admin/login";
   };
 
+  /* ===============================
+     🔹 Filter Tours
+  ================================ */
+  const internationalTours = tours.filter(t => t.isInternational);
+  const domesticTours = tours.filter(t => !t.isInternational);
+
   return (
-    <div className="relative min-h-screen bg-gray-100">
-      {/* Header */}
-      <header className="fixed top-0 left-0 w-full bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white shadow-lg z-50 p-4 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-100">
+      {/* HEADER */}
+      <header className="fixed top-0 w-full bg-black text-white p-4 flex justify-between z-50">
         <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        <div className="flex gap-4">
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-white/10 px-4 py-2 rounded-xl shadow hover:scale-105 transition transform font-semibold"
-          >
-            + Add New Tour
-          </button>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 px-5 py-2 rounded-xl shadow hover:bg-red-700 transition font-semibold"
-          >
-            Logout
-          </button>
+        <div className="flex gap-3">
+          <button onClick={() => setShowModal(true)} className="bg-gray-700 px-4 py-2 rounded">+ Add Tour</button>
+          <button onClick={handleLogout} className="bg-red-600 px-4 py-2 rounded">Logout</button>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex justify-center items-start pt-32 px-4">
-        <div className="w-full max-w-5xl">
-          {message && <p className="mb-4 text-center text-red-600 font-semibold">{message}</p>}
-
-          {loading ? (
-            <p className="text-center text-gray-700">Loading tours...</p>
-          ) : (
+      {/* TOURS */}
+      <main className="pt-32 max-w-6xl mx-auto px-4 space-y-12">
+        {/* INTERNATIONAL */}
+        <section>
+          <h2 className="text-xl font-bold mb-4">🌍 International Tours</h2>
+          {loading ? <p>Loading...</p> : 
+            internationalTours.length === 0 ? <p>No international tours added yet.</p> :
             <div className="grid md:grid-cols-3 gap-6">
-              {tours.map((tour) => (
-                <div
-                  key={tour._id}
-                  className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg p-5 flex flex-col justify-between hover:scale-105 transition transform"
-                >
-                  <h4 className="text-xl font-bold mb-2">{tour.title}</h4>
-                  <p className="text-gray-600 mb-2">{tour.description}</p>
-                  {tour.image && (
-                    <img
-                      src={tour.image}
-                      alt={tour.title}
-                      className="w-full h-32 object-cover rounded-lg mb-2"
-                    />
-                  )}
-                  <p className="text-gray-700 font-semibold mb-2">Price: ${tour.price || 0}</p>
-                  <p className="text-sm text-gray-500 mb-4">
-                    Popular: {tour.popular ? "Yes" : "No"}
-                  </p>
-                  <button
-                    onClick={() => handleDelete(tour._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 transition font-semibold"
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
+              {internationalTours.map(t => <TourCard key={t._id} tour={t} onDelete={handleDelete} />)}
             </div>
-          )}
-        </div>
+          }
+        </section>
+
+        {/* DOMESTIC */}
+        <section>
+          <h2 className="text-xl font-bold mb-4">🇵🇰 Domestic Tours</h2>
+          {loading ? <p>Loading...</p> :
+            domesticTours.length === 0 ? <p>No domestic tours added yet.</p> :
+            <div className="grid md:grid-cols-3 gap-6">
+              {domesticTours.map(t => <TourCard key={t._id} tour={t} onDelete={handleDelete} />)}
+            </div>
+          }
+        </section>
       </main>
 
-      {/* Modal */}
+      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl relative">
-            <h3 className="text-2xl font-bold mb-4 text-gray-800">Add New Tour</h3>
-            <form onSubmit={handleAddTour} className="flex flex-col gap-4">
-              <input
-                type="text"
-                name="title"
-                placeholder="Title"
-                value={form.title}
-                onChange={handleChange}
-                required
-                className="border px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
-              />
-              <textarea
-                name="description"
-                placeholder="Description"
-                value={form.description}
-                onChange={handleChange}
-                required
-                className="border px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
-              />
-              <input
-                type="text"
-                name="image"
-                placeholder="Image URL"
-                value={form.image}
-                onChange={handleChange}
-                className="border px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
-              />
-              <input
-                type="number"
-                name="price"
-                placeholder="Price"
-                value={form.price}
-                onChange={handleChange}
-                className="border px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
-              />
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="popular"
-                  checked={form.popular}
-                  onChange={handleChange}
-                />
-                Popular
-              </label>
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <form onSubmit={handleAddTour} className="bg-white p-6 rounded-xl w-full max-w-lg space-y-2 overflow-y-auto max-h-[90vh]">
+            <h3 className="text-xl font-bold">Add New Tour</h3>
 
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-100 transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white px-4 py-2 rounded-xl shadow hover:scale-105 transition font-semibold"
-                >
-                  Add Tour
-                </button>
-              </div>
-            </form>
-          </div>
+            <input name="title" placeholder="Title" value={form.title} onChange={handleChange} className="border p-2 w-full" required />
+            <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} className="border p-2 w-full" required />
+
+            {/* TOUR TYPE */}
+            <div className="flex gap-6 mt-2">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="isInternational" value="false" checked={form.isInternational === false} onChange={handleChange} />
+                🇵🇰 Domestic
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="isInternational" value="true" checked={form.isInternational === true} onChange={handleChange} />
+                🌍 International
+              </label>
+            </div>
+
+            {/* FIELDS */}
+            {["locations","hotel","itinerary","services","terms","travelerInstructions","cancellation","refundPolicy","fastFacts"].map(field => (
+              <textarea key={field} name={field} placeholder={`${field} (one per line)`} value={form[field]} onChange={handleChange} className="border p-2 w-full" />
+            ))}
+            <input type="date" name="startDate" value={form.startDate} onChange={handleChange} className="border p-2 w-full" />
+            <input type="date" name="endDate" value={form.endDate} onChange={handleChange} className="border p-2 w-full" />
+            <input type="number" name="price" placeholder="Price" value={form.price} onChange={handleChange} className="border p-2 w-full" />
+            <input name="category" placeholder="Category" value={form.category} onChange={handleChange} className="border p-2 w-full" />
+            <input type="number" name="durationDays" placeholder="Duration Days" value={form.durationDays} onChange={handleChange} className="border p-2 w-full" />
+
+            {/* CHECKBOXES */}
+            {["popular","Normal","TierTour"].map(cb => (
+              <label key={cb} className="flex items-center gap-2">
+                <input type="checkbox" name={cb} checked={form[cb]} onChange={handleChange} /> {cb}
+              </label>
+            ))}
+
+            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} required />
+
+            <div className="flex justify-end gap-3 mt-3">
+              <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+              <button type="submit" className="bg-black text-white px-4 py-2 rounded">Save</button>
+            </div>
+          </form>
         </div>
       )}
     </div>

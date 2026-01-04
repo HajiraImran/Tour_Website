@@ -10,16 +10,16 @@ export default function AdminLogin() {
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", form);
-      localStorage.setItem("adminToken", res.data.token);
-      setMessage("Login successful!");
-      navigate("/admin/dashboard");
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Error logging in");
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await axios.post("http://localhost:5000/api/auth/login", form);
+    localStorage.setItem("adminToken", res.data.token); // save token
+    navigate("/admin/dashboard"); // redirect
+  } catch (err) {
+    setMessage(err.response?.data?.message || "Error logging in");
+  }
+};
+
 
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-128px)] bg-gray-50">

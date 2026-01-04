@@ -99,8 +99,10 @@ export default function TopDestinations() {
           Top Destinations in Pakistan
         </h2>
         <p className="text-gray-500 mb-12">
-          Discover the most breathtaking places Pakistan has to offer, hand-picked for your perfect journey.
-        </p>
+Discover the most breathtaking places Pakistan has to offer, hand-picked for your perfect journey.  
+  From majestic mountains and serene lakes to vibrant cities and ancient heritage sites, every destination tells a unique story.  
+  Immerse yourself in rich culture, delicious cuisine, and warm hospitality that make every trip unforgettable.  
+  Whether you seek adventure, relaxation, or cultural exploration, Pakistan has something extraordinary waiting for you.          </p>
 
         {/* Slider */}
         <div

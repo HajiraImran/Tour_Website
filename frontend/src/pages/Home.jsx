@@ -1,53 +1,146 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import {
+  GiPalmTree,
+  GiMountainClimbing,
+  GiTempleGate,
+  GiWorld,
+  GiCommercialAirplane,
+  GiModernCity
+} from "react-icons/gi";
+
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip as PieTooltip,
+  ResponsiveContainer as PieResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as BarTooltip,
+  ResponsiveContainer as BarResponsiveContainer,
+} from "recharts";
+
 import TourCategoriesSlider from "../components/TourCategoriesSlider";
 import TopDestinations from "../components/TopDestinations";
 import TopInternationalDestinations from "../components/TopInternationalDestinations";
-
-import ChatBot from "../components/ChatBot";
 import Testimonials from "../components/Testimonials";
-
-
-
+import TourCard from "../components/TourCard";
+import WhyChooseCard from "../components/WhyChooseCard";
+import Modal from "../components/Modal";
+import ContactPage from "../pages/Contact";
+import ContactForm from "../components/ContactForm";
+import GallerySection from "../components/GallerySection";
 
 
 
 export default function Home() {
-  const featuredTours = [
-    { title: 'Beach Paradise', desc: 'Relax on golden sands and enjoy crystal clear waters.', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80', popular: true },
-    { title: 'Mountain Adventure', desc: 'Experience thrilling hikes and breathtaking views.', img: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=400&q=80' },
-    { title: 'City Explorer', desc: 'Discover the hidden gems and culture of vibrant cities.', img: 'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=400&q=80' },
-  ];
-
-  const destinations = [
-    { name: 'Maldives', img: 'https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Swiss Alps', img: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Paris', img: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Bali', img: 'https://images.unsplash.com/photo-1493558103817-58b2924bce98?auto=format&fit=crop&w=300&q=80' },
-  ];
-
-  // Hero video state
+  /* ---------------- HERO VIDEOS ---------------- */
   const videos = [
     "/videos/travel1.mp4",
     "/videos/travel2.mp4",
     "/videos/travel3.mp4",
     "/videos/travel4.mp4",
-     "/videos/travels.mp4"
-
-
+    "/videos/travels.mp4",
   ];
   const [currentVideo, setCurrentVideo] = useState(0);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentVideo(prev => (prev + 1) % videos.length);
-    }, 5000); // change video every 5 sec
+      setCurrentVideo((prev) => (prev + 1) % videos.length);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  const [showContactModal, setShowContactModal] = useState(false);
+
+
+
+  /* ---------------- DOMESTIC TOURS ---------------- */
+  const [domesticTours, setDomesticTours] = useState([]);
+  const [loadingDomesticTours, setLoadingDomesticTours] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/public/tours/domestic")
+      .then((res) => setDomesticTours(res.data.slice(0, 3))) // show 3 tours on home
+      .catch(console.error)
+      .finally(() => setLoadingDomesticTours(false));
+  }, []);
+
+  /* ---------------- INTERNATIONAL TOURS ---------------- */
+  const [internationalTours, setInternationalTours] = useState([]);
+  const [loadingInternationalTours, setLoadingInternationalTours] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/public/tours/international")
+      .then((res) => setInternationalTours(res.data.slice(0, 3)))
+      .catch(console.error)
+      .finally(() => setLoadingInternationalTours(false));
+  }, []);
+
+  /* ---------------- POPULAR DESTINATIONS ---------------- */
+  const destinations = [
+    { name: "Skardu", img: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff" },
+    { name: "Hunza", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" },
+    { name: "Fairy Meadows", img: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34" },
+    { name: "Naltar Valley", img: "https://images.unsplash.com/photo-1493558103817-58b2924bce98" },
+  ];
+
+  /* ---------------- SERVICES ---------------- */
+  const services = [
+    {
+      title: "Luxury Travel",
+      desc: "Experience hand-crafted luxury packages with premium accommodations and curated experiences.",
+      icon: <GiPalmTree size={50} className="mb-4 text-blue-600" />,
+    },
+    {
+      title: "Adventure Tours",
+      desc: "Thrilling adventures across mountains, rivers, and deserts for the thrill-seekers.",
+      icon: <GiMountainClimbing size={50} className="mb-4 text-green-600" />,
+    },
+    {
+      title: "Cultural Trips",
+      desc: "Explore the rich heritage, traditions, and culture of amazing destinations.",
+      icon: <GiTempleGate size={50} className="mb-4 text-red-600" />,
+    },
+    {
+      title: "Customized Packages",
+      desc: "Tailor-made itineraries to match your interests, schedule, and budget.",
+      icon: <GiWorld size={50} className="mb-4 text-purple-600" />,
+    },
+    {
+      title: "Hotel Booking",
+      desc: "Comfortable and affordable hotel bookings with trusted partners in Pakistan and abroad.",
+      icon: <GiModernCity size={50} className="mb-4 text-indigo-600" />,
+    },
+    {
+      title: "Easy Flight Booking",
+      desc: "Quick and hassle-free domestic and international flight booking services.",
+      icon: <GiCommercialAirplane size={50} className="mb-4 text-sky-600" />,
+    },
+    {
+      title: "Pakistan Tour Packages",
+      desc: "Explore the natural beauty of Pakistan with professionally planned tour packages.",
+      icon: <GiPalmTree size={50} className="mb-4 text-emerald-600" />,
+    },
+    {
+      title: "International Tour Packages",
+      desc: "Travel the world with premium international tour packages tailored for you.",
+      icon: <GiWorld size={50} className="mb-4 text-violet-600" />,
+    },
+  ];
 
   return (
     <div className="font-sans text-gray-800">
 
-      {/* Hero Section */}
+      {/* ================= HERO ================= */}
       <section className="relative h-screen w-screen overflow-hidden">
         {videos.map((vid, index) => (
           <video
@@ -55,32 +148,108 @@ export default function Home() {
             autoPlay
             muted
             loop
-            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${currentVideo === index ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
+              currentVideo === index ? "opacity-100" : "opacity-0"
+            }`}
           >
             <source src={vid} type="video/mp4" />
           </video>
         ))}
-
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 z-10 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/60 z-10"></div>
         <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-4">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">Travel Pakistan & Beyond</h1>
           <p className="text-xl md:text-2xl text-white mb-6">Hand Crafted Luxury Travel Packages</p>
-          <button className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white font-semibold px-8 py-3 rounded-lg hover:from-gray-900 hover:via-gray-800 hover:to-black transition duration-300">
-            Book Your Tour
-          </button>
+          <button
+  onClick={() => setShowContactModal(true)}
+  className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white px-8 py-3 rounded-lg font-semibold"
+>
+  Book Now
+</button>
+
+
         </div>
       </section>
 
-      {/* Welcome Section */}
-      <section className="py-20 bg-white text-gray-800">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Welcome to Highland Escape Travellers</h1>
-          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            Explore hand-crafted luxury travel experiences across Pakistan and beyond. Discover breathtaking landscapes, vibrant cities, and unforgettable memories with us.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button className="bg-gray-800 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-gray-900 transition duration-300">Explore Tours</button>
-            <button className="bg-gray-100 text-gray-800 px-8 py-3 rounded-lg border border-gray-300 hover:bg-gray-200 transition duration-300">Learn More</button>
+      {/* ================= WELCOME ================= */}
+      <section className="py-20 bg-white text-center">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: 'Raleway, sans-serif' }}>
+          Welcome to Highland Escape Travellers
+        </h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8" style={{ fontFamily: 'Inter, sans-serif', lineHeight: '1.8' }}>
+          Explore hand-crafted luxury travel experiences across Pakistan and beyond. 
+          Discover breathtaking landscapes, rich cultural heritage, and hidden gems 
+          curated just for you. Whether you seek adventure, relaxation, or a blend 
+          of both, our expert team ensures every journey is unforgettable. From 
+          domestic escapes to international adventures, create memories that last a lifetime.
+        </p>
+      </section>
+
+      {/* ================= SERVICES ================= */}
+      <section className="relative py-20 bg-gray-50">
+        <div className="relative max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-12 text-gray-900">
+            Our Services
+          </h2>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service, i) => (
+              <div
+                key={i}
+                className="group relative rounded-2xl overflow-hidden shadow-lg p-8 flex flex-col items-center text-center
+                           bg-gradient-to-r from-gray-800 via-black to-gray-900 text-white
+                           transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl
+                           before:absolute before:inset-0 before:rounded-2xl
+                           before:bg-gradient-to-r before:from-gray-800 before:via-gray-900 before:to-black
+                           before:opacity-0 before:transition-opacity before:duration-500
+                           hover:before:opacity-50"
+              >
+                <div className="mb-4 transform transition-all duration-500
+                                group-hover:scale-125 group-hover:rotate-6
+                                group-hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.6)]">
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-2">{service.title}</h3>
+                <p className="text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY CHOOSE US ================= */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-start gap-12">
+          <div className="flex-1 flex flex-col gap-6">
+            <h2 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ fontFamily: 'Raleway, sans-serif' }}>
+              Why Choose Highland Escape Travellers
+            </h2>
+            {[...Array(4).keys()].map((i) => {
+              const items = [
+                { icon: "🌟", title: "Exceptional Service", desc: "From the moment you reach out, our team provides personalized support tailored to your needs, ensuring a seamless, stress-free, and unforgettable travel experience. Every detail, big or small, is handled with care so you can focus on enjoying your journey", video: "/videos/travel1.mp4" },
+                { icon: "🏔️", title: "Curated Experiences", desc: "We take care of every travel detail, including flights, airport transfers, hotel bookings, and local transport. Our goal is to make your journey smooth, efficient, and completely stress-free so you can focus on enjoying the experience", video: "/videos/travel2.mp4" },
+                { icon: "💎", title: "Premium Quality", desc: "We help you create unforgettable memories with guided tours, photography tips, cultural immersion, and unique local experiences. Every tour is designed to be photogenic, engaging, and full of moments you'll cherish forever", video: "/videos/travel3.mp4" },
+                { icon: "🌍", title: "Global & Local Tours", desc: "Experience premium travel at competitive prices. We carefully balance cost and quality to provide hand-crafted itineraries that deliver exceptional value without compromising comfort, luxury, or experience", video: "/videos/travel4.mp4" },
+              ];
+              return (
+                <WhyChooseCard
+                  key={i}
+                  item={items[i]}
+                  onSelect={() => setCurrentVideoIndex(i)}
+                  isActive={currentVideoIndex === i}
+                />
+              );
+            })}
+          </div>
+          <div className="flex-1 relative w-full lg:h-[600px] rounded-2xl overflow-hidden shadow-xl">
+            <video
+              key={currentVideoIndex}
+              autoPlay
+              loop
+              muted
+              className="w-full h-full object-cover transition-all duration-500"
+            >
+              <source src={videos[currentVideoIndex]} type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-black/30"></div>
           </div>
         </div>
       </section>
@@ -89,39 +258,86 @@ export default function Home() {
       <TopDestinations />
       <TopInternationalDestinations />
       
-            <ChatBot />
 
-
-
-      {/* Featured Tours */}
-      <section className="max-w-6xl mx-auto px-4 mt-16">
-        <h2 className="text-3xl font-bold mb-8 text-center">Featured Tours</h2>
-        <div className="grid gap-8 md:grid-cols-3">
-          {featuredTours.map((tour, i) => (
-            <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition duration-300 group">
-              <div className="relative">
-                <img src={tour.img} alt={tour.title} className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105" />
-                {tour.popular && <span className="absolute top-3 left-3 bg-yellow-400 text-sm font-semibold px-3 py-1 rounded-full">Popular</span>}
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2">{tour.title}</h3>
-                <p className="text-gray-600 mb-4">{tour.desc}</p>
-                <button className="bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white font-semibold px-8 py-3 rounded-lg hover:from-gray-900 hover:via-gray-800 hover:to-black transition duration-300">Book Now</button>
-              </div>
+      {/* ================= DOMESTIC TOURS ================= */}
+      <section className="max-w-6xl mx-auto px-4 mt-20">
+        <h2 className="text-3xl font-bold text-center mb-10">Domestic Tours</h2>
+        {loadingDomesticTours ? (
+          <p className="text-center text-gray-500">Loading tours...</p>
+        ) : (
+          <>
+            <div className="grid gap-8 md:grid-cols-3">
+              {domesticTours.map((tour) => (
+                <TourCard
+                  key={tour._id}
+                  id={tour._id}
+                  title={tour.title}
+                  description={tour.description}
+                  price={tour.price}
+                  image={tour.image}
+                  flag="🇵🇰 Domestic"
+                />
+              ))}
             </div>
-          ))}
-        </div>
+            <div className="mt-12 text-center">
+              <Link
+                to="/tours/domestic"
+                className="inline-block px-10 py-4 rounded-2xl font-bold text-lg
+                           bg-gradient-to-r from-gray-800 via-gray-900 to-black
+                           text-white shadow-xl shadow-black/40
+                           hover:scale-105 transition-transform duration-300"
+              >
+                View All Domestic Tours →
+              </Link>
+            </div>
+          </>
+        )}
       </section>
 
-      {/* Popular Destinations */}
-      <section className="bg-gray-100 py-16 mt-16">
+      {/* ================= INTERNATIONAL TOURS ================= */}
+      <section className="max-w-6xl mx-auto px-4 mt-20">
+        <h2 className="text-3xl font-bold text-center mb-10">International Tours</h2>
+        {loadingInternationalTours ? (
+          <p className="text-center text-gray-500">Loading tours...</p>
+        ) : (
+          <>
+            <div className="grid gap-8 md:grid-cols-3">
+              {internationalTours.map((tour) => (
+                <TourCard
+                  key={tour._id}
+                  id={tour._id}
+                  title={tour.title}
+                  description={tour.description}
+                  price={tour.price}
+                  image={tour.image}
+                  flag="🌍 International"
+                />
+              ))}
+            </div>
+            <div className="mt-12 text-center">
+              <Link
+                to="/tours/international"
+                className="inline-block px-10 py-4 rounded-2xl font-bold text-lg
+                           bg-gradient-to-r from-gray-800 via-gray-900 to-black
+                           text-white shadow-xl shadow-black/40
+                           hover:scale-105 transition-transform duration-300"
+              >
+                View All International Tours →
+              </Link>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* ================= POPULAR DESTINATIONS ================= */}
+      <section className="bg-gray-100 py-16 mt-20">
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-12">Popular Destinations</h2>
           <div className="grid gap-6 md:grid-cols-4">
             {destinations.map((dest, i) => (
-              <div key={i} className="relative overflow-hidden rounded-xl shadow-lg group">
-                <img src={dest.img} alt={dest.name} className="w-full h-40 object-cover transition-transform duration-500 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+              <div key={i} className="relative overflow-hidden rounded-xl shadow-lg">
+                <img src={dest.img} alt={dest.name} className="w-full h-40 object-cover" />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                   <h3 className="text-white text-lg font-semibold">{dest.name}</h3>
                 </div>
               </div>
@@ -130,68 +346,149 @@ export default function Home() {
         </div>
       </section>
 
-            <Testimonials />
+      {/* ================= OUR STATS (Charts) ================= */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="text-4xl font-bold mb-6">Our Stats</h2>
+          <p className="text-gray-600 mb-12 max-w-3xl mx-auto">
+            We take pride in our journey. Here are some key statistics that reflect our experience and commitment.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
 
+            {/* Pie Chart */}
+            <div className="group relative rounded-3xl overflow-hidden shadow-xl p-8
+                            bg-gradient-to-r from-gray-800 via-black to-gray-900 text-white
+                            transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl
+                            before:absolute before:inset-0 before:rounded-3xl
+                            before:bg-gradient-to-r before:from-gray-800 before:via-gray-900 before:to-black
+                            before:opacity-0 before:transition-opacity before:duration-500
+                            hover:before:opacity-50">
+              <h3 className="text-2xl font-bold mb-6">Tours Breakdown</h3>
+              <PieResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: "Domestic Tours", value: 60, color: "#1E40AF" },
+                      { name: "International Tours", value: 30, color: "#059669" },
+                      { name: "Custom Packages", value: 10, color: "#9333EA" },
+                    ]}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    fill="#8884d8"
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {[
+                      { color: "#1E40AF" },
+                      { color: "#059669" },
+                      { color: "#9333EA" },
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <PieTooltip />
+                </PieChart>
+              </PieResponsiveContainer>
+            </div>
 
+            {/* Bar Chart */}
+            <div className="group relative rounded-3xl overflow-hidden shadow-xl p-8
+                            bg-gradient-to-r from-gray-800 via-black to-gray-900 text-white
+                            transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl
+                            before:absolute before:inset-0 before:rounded-3xl
+                            before:bg-gradient-to-r before:from-gray-800 before:via-gray-900 before:to-black
+                            before:opacity-0 before:transition-opacity before:duration-500
+                            hover:before:opacity-50">
+              <h3 className="text-2xl font-bold mb-6">Travel Statistics</h3>
+              <BarResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={[
+                    { name: "Destinations", value: 50 },
+                    { name: "Tours Organized", value: 500 },
+                    { name: "Happy Travelers", value: 1000 },
+                    { name: "Hotels Partnered", value: 200 },
+                                        { name: "Tour Packages", value: 150 },
+                    { name: "Customer Support", value: 24 },
+                  ]}
+                  margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff33" />
+                  <XAxis dataKey="name" stroke="#ffffff99" />
+                  <YAxis stroke="#ffffff99" />
+                  <Bar dataKey="value" fill="#facc15" barSize={30} />
+                  <BarTooltip contentStyle={{ backgroundColor: "#111", borderColor: "#333" }} />
+                </BarChart>
+              </BarResponsiveContainer>
+            </div>
 
-      {/* Modern Masonry Gallery Section */}
-<section className="py-24 relative bg-gradient-to-b from-white to-gray-100">
-  <div className="max-w-7xl mx-auto px-4">
-    <h2 className="text-4xl font-extrabold text-center mb-14 tracking-wide">
-      Travel Moments
-    </h2>
+            {/* Line Chart (Tours Growth Over Years) */}
+            <div className="group relative rounded-3xl overflow-hidden shadow-xl p-8
+                            bg-gradient-to-r from-gray-800 via-black to-gray-900 text-white
+                            transition-transform duration-500 hover:-translate-y-2 hover:shadow-2xl
+                            before:absolute before:inset-0 before:rounded-3xl
+                            before:bg-gradient-to-r before:from-gray-800 before:via-gray-900 before:to-black
+                            before:opacity-0 before:transition-opacity before:duration-500
+                            hover:before:opacity-50">
+              <h3 className="text-2xl font-bold mb-6">Tours Growth Over Years</h3>
+              <BarResponsiveContainer width="100%" height={300}>
+                <BarChart
+                  data={[
+                    { year: 2018, tours: 100 },
+                    { year: 2019, tours: 200 },
+                    { year: 2020, tours: 300 },
+                    { year: 2021, tours: 400 },
+                    { year: 2022, tours: 500 },
+                    { year: 2023, tours: 600 },
+                  ]}
+                  margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff33" />
+                  <XAxis dataKey="year" stroke="#ffffff99" />
+                  <YAxis stroke="#ffffff99" />
+                  <Bar dataKey="tours" fill="#10B981" barSize={20} />
+                  <BarTooltip contentStyle={{ backgroundColor: "#111", borderColor: "#333" }} />
+                </BarChart>
+              </BarResponsiveContainer>
+            </div>
 
-    <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-      {[
-        "/images/bali.jpg",
-        "/images/Gilgit.jpg",
-        "/images/maldives.jpg",
-        "/images/Hunza.jpg",
-        "/images/Naran.jpg",
-        "/images/Kalam.jpg",
-        "/images/paris.jpg",
-        "/images/Turkey.jpg",
-      ].map((img, i) => (
-        <div
-          key={i}
-          className="break-inside-avoid relative rounded-xl overflow-hidden shadow-xl group cursor-pointer"
-        >
-          <img
-            src={img}
-            alt="gallery"
-            className="w-full rounded-xl transition-transform duration-700 group-hover:scale-110"
-          />
-
-          {/* Glass overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-end p-4 opacity-0 group-hover:opacity-100 backdrop-blur-sm">
-            <p className="text-white text-lg font-semibold tracking-wide">
-              Explore More →
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
-
-
-      {/* Final CTA Section */}
-      <section className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-gray-800"></div>
-        <div className="absolute -top-10 -left-10 w-56 h-56 bg-blue-600/20 blur-[90px] rounded-full"></div>
-        <div className="absolute bottom-0 right-0 w-56 h-56 bg-indigo-600/20 blur-[100px] rounded-full"></div>
-        <div className="absolute inset-0 backdrop-blur-sm bg-white/5"></div>
-        <div className="relative z-20 max-w-3xl mx-auto text-center px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Your Journey Begins Here</h2>
-          <p className="mt-3 text-lg md:text-xl text-gray-300 max-w-xl mx-auto">Experience world-class tours, breathtaking destinations, and unforgettable memories.</p>
-          <div className="mt-8 flex justify-center gap-4">
-            <button className="bg-gradient-to-r from-gray-800 via-black to-gray-900 px-7 py-3 text-white font-semibold rounded-xl shadow-md shadow-black/40 border border-white/10 transition-transform duration-300 hover:scale-105">Book Now →</button>
-            <button className="bg-white/10 text-white px-7 py-3 rounded-xl font-semibold border border-white/20 backdrop-blur-md hover:bg-white/20 hover:scale-105 transition duration-300">View Packages</button>
           </div>
         </div>
       </section>
+
+      {/* ================= TESTIMONIALS ================= */}
+
+      <GallerySection />
+
+      <Testimonials />
+
+      {/* ================= CTA ================= */}
+      <section className="py-20 bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white text-center">
+        <h2 className="text-4xl font-bold mb-6">
+          Ready to Plan Your Next Adventure?
+        </h2>
+        <p className="mb-8 text-lg max-w-2xl mx-auto">
+          Join thousands of travelers who trust Highland Escape Travellers for
+          unforgettable journeys.
+        </p>
+        <button className="bg-white text-gray-900 px-8 py-3 rounded-xl font-semibold hover:scale-105 transition-transform">
+          Book Your Tour
+        </button>
+      </section>
+
+      <Modal
+  isOpen={showContactModal}
+  onClose={() => setShowContactModal(false)}
+>
+  <ContactForm onSuccess={() => setShowContactModal(false)} />
+</Modal>
+
+
+
     </div>
   );
 }
+
