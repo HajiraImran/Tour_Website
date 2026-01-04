@@ -58,6 +58,37 @@ export default function Home() {
   }, []);
 
   const [showContactModal, setShowContactModal] = useState(false);
+  // Add this near the top with other states
+const [showPosterPopup, setShowPosterPopup] = useState(false);
+const [fadePoster, setFadePoster] = useState(false); // controls fade-in/out
+
+
+// Show poster popup 2 seconds after page loads
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setShowPosterPopup(true); // show popup
+    setFadePoster(true);      // start fade-in
+  }, 2000); // delay 2 seconds
+
+  return () => clearTimeout(timer);
+}, []);
+
+
+// Auto-hide poster popup after 5 seconds
+useEffect(() => {
+  if (showPosterPopup) {
+    const autoClose = setTimeout(() => {
+      setFadePoster(false); // start fade-out
+      // remove popup after fade duration
+      setTimeout(() => setShowPosterPopup(false), 500); // match fade duration
+    }, 30000); // visible for 5 seconds
+
+    return () => clearTimeout(autoClose);
+  }
+}, [showPosterPopup]);
+
+
+
 
 
 
@@ -216,43 +247,75 @@ export default function Home() {
       </section>
 
       {/* ================= WHY CHOOSE US ================= */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-start gap-12">
-          <div className="flex-1 flex flex-col gap-6">
-            <h2 className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-800 via-gray-900 to-black" style={{ fontFamily: 'Raleway, sans-serif' }}>
-              Why Choose Highland Escape Travellers
-            </h2>
-            {[...Array(4).keys()].map((i) => {
-              const items = [
-                { icon: "🌟", title: "Exceptional Service", desc: "From the moment you reach out, our team provides personalized support tailored to your needs, ensuring a seamless, stress-free, and unforgettable travel experience. Every detail, big or small, is handled with care so you can focus on enjoying your journey", video: "/videos/travel1.mp4" },
-                { icon: "🏔️", title: "Curated Experiences", desc: "We take care of every travel detail, including flights, airport transfers, hotel bookings, and local transport. Our goal is to make your journey smooth, efficient, and completely stress-free so you can focus on enjoying the experience", video: "/videos/travel2.mp4" },
-                { icon: "💎", title: "Premium Quality", desc: "We help you create unforgettable memories with guided tours, photography tips, cultural immersion, and unique local experiences. Every tour is designed to be photogenic, engaging, and full of moments you'll cherish forever", video: "/videos/travel3.mp4" },
-                { icon: "🌍", title: "Global & Local Tours", desc: "Experience premium travel at competitive prices. We carefully balance cost and quality to provide hand-crafted itineraries that deliver exceptional value without compromising comfort, luxury, or experience", video: "/videos/travel4.mp4" },
-              ];
-              return (
-                <WhyChooseCard
-                  key={i}
-                  item={items[i]}
-                  onSelect={() => setCurrentVideoIndex(i)}
-                  isActive={currentVideoIndex === i}
-                />
-              );
-            })}
-          </div>
-          <div className="flex-1 relative w-full lg:h-[600px] rounded-2xl overflow-hidden shadow-xl">
-            <video
-              key={currentVideoIndex}
-              autoPlay
-              loop
-              muted
-              className="w-full h-full object-cover transition-all duration-500"
-            >
-              <source src={videos[currentVideoIndex]} type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-black/30"></div>
-          </div>
-        </div>
-      </section>
+      {/* ================= WHY CHOOSE US ================= */}
+<section className="py-20 bg-gray-50">
+  <div className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-start gap-12">
+    
+    {/* LEFT: Cards */}
+    <div className="flex-1 flex flex-col gap-6">
+      <h2
+        className="text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-gray-800 via-gray-900 to-black"
+        style={{ fontFamily: 'Raleway, sans-serif' }}
+      >
+        Why Choose Highland Escape Travellers
+      </h2>
+
+      {/* Cards */}
+      {(() => {
+        const items = [
+          {
+            icon: "🌟",
+            title: "Exceptional Service",
+            desc: "From the moment you reach out, our team provides personalized support tailored to your needs, ensuring a seamless, stress-free, and unforgettable travel experience."
+          },
+          {
+            icon: "🏔️",
+            title: "Curated Experiences",
+            desc: "We take care of every travel detail, including flights, airport transfers, hotel bookings, and local transport to make your journey smooth and stress-free."
+          },
+          {
+            icon: "💎",
+            title: "Premium Quality",
+            desc: "We help you create unforgettable memories with guided tours, photography tips, cultural immersion, and unique local experiences."
+          },
+          {
+            icon: "🌍",
+            title: "Global & Local Tours",
+            desc: "Experience premium travel at competitive prices. Our hand-crafted itineraries provide exceptional value without compromising comfort or experience."
+          },
+        ];
+
+        const [activeCard, setActiveCard] = useState(null);
+
+        return items.map((item, i) => (
+          <WhyChooseCard
+            key={i}
+            item={item}
+            onSelect={() => setActiveCard(i)}
+            isActive={activeCard === i}
+          />
+        ));
+      })()}
+    </div>
+
+    {/* RIGHT: Single Video */}
+    <div className="flex-1 relative w-full h-72 md:h-80 lg:h-[600px] xl:h-[650px] rounded-2xl overflow-hidden shadow-xl">
+
+
+
+      <video
+        autoPlay
+        loop
+        muted
+        className="w-full h-full object-cover transition-all duration-500"
+      >
+        <source src="/videos/WhyChooseUs.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 bg-black/30"></div>
+    </div>
+  </div>
+</section>
+
 
       <TourCategoriesSlider />
       <TopDestinations />
@@ -485,6 +548,43 @@ export default function Home() {
 >
   <ContactForm onSuccess={() => setShowContactModal(false)} />
 </Modal>
+
+
+{showPosterPopup && (
+  <div
+    className={`fixed inset-0 z-50 flex items-center justify-center bg-black/70
+                transition-opacity duration-500 ${
+                  fadePoster ? "opacity-100" : "opacity-0"
+                }`}
+  >
+    <div
+      className={`relative w-10/12 max-w-3xl p-4 bg-white rounded-2xl shadow-xl
+                  transition-transform duration-500 ${
+                    fadePoster ? "scale-100" : "scale-90"
+                  }`}
+    >
+      {/* Close button */}
+      <button
+        onClick={() => {
+          setFadePoster(false);
+          setTimeout(() => setShowPosterPopup(false), 500);
+        }}
+        className="absolute top-2 right-2 text-gray-700 text-xl font-bold"
+      >
+        ×
+      </button>
+
+      {/* Poster Image */}
+      <img
+        src="/images/Posters.jpeg" // your poster
+        alt="Promotional Poster"
+        className="w-full h-auto rounded-xl"
+      />
+    </div>
+  </div>
+)}
+
+
 
 
 

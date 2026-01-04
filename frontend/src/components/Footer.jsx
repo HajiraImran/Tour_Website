@@ -115,14 +115,19 @@ export default function Footer() {
           </div>
 
           {/* Contact Info */}
-          <div className="text-gray-400 space-y-1">
-            <p className="flex items-center gap-2">
-              <FaEnvelope /> highlandescapestravelers@gmail.com
-            </p>
-            <p className="flex items-center gap-2">
-              <FaPhoneAlt /> 923043461111
-            </p>
-          </div>
+         {/* Contact Info */}
+<div className="text-gray-400 space-y-1">
+  <p className="flex items-center gap-2">
+    <FaEnvelope /> highlandescapestravelers@gmail.com
+  </p>
+  <p className="flex items-center gap-2">
+    <FaPhoneAlt /> 923043461111
+  </p>
+  <p className="flex items-center gap-2">
+    <FaMapMarkerAlt /> Office 3032, 3rd Floor, World Trade Center, Islamabad
+  </p>
+</div>
+
         </div>
 
       </div>

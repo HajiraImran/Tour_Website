@@ -37,7 +37,7 @@ export default function ContactPage() {
   const contactItems = [
     { icon: "📞", title: "Phone", text: "+92 304 3461111", details: "Available 9 AM – 6 PM" },
     { icon: "✉️", title: "Email", text: "highlandescapestravelers@gmail.com", details: "Reply within 24 hours" },
-    { icon: "📍", title: "Address", text: "Islamabad, Pakistan", details: "Visit during office hours" },
+    { icon: "📍", title: "Address", text: "Office 3032 , 3rd Floor World Trade Center, Islamabad Pakistan.", details: "Visit during office hours" },
     { icon: "🕒", title: "Working Hours", text: "Mon – Sat, 9 AM – 6 PM", details: "Closed Sundays" },
   ];
 
