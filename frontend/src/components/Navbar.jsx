@@ -131,18 +131,51 @@ export default function Navbar() {
           <Link to="/" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Home</Link>
           <Link to="/about" onClick={closeMenu} className="block text-lg hover:text-yellow-400">About</Link>
 
-          <div>
-            <button onClick={() => setTourMenuOpen(!tourMenuOpen)} className="w-full flex justify-between items-center text-lg hover:text-yellow-400">
-              Tours <FaChevronDown className={`transition-transform duration-300 ${tourMenuOpen ? 'rotate-180' : 'rotate-0'}`} />
-            </button>
-            {tourMenuOpen && (
-              <div className="ml-4 mt-2 space-y-2">
-                <Link to="/tours/domestic" onClick={closeMenu} className="block hover:text-yellow-400">🇵🇰 Domestic Tours</Link>
-                <Link to="/tours/international" onClick={closeMenu} className="block hover:text-yellow-400">International Tours</Link>
-                <Link to="/tours" onClick={closeMenu} className="block hover:text-yellow-400">All Tours</Link>
-              </div>
-            )}
-          </div>
+          {/* Mobile Tours */}
+<div>
+  <button
+    onClick={() => setTourMenuOpen(!tourMenuOpen)}
+    className="w-full flex justify-between items-center text-lg hover:text-yellow-400"
+  >
+    Tours <FaChevronDown className={`transition-transform duration-300 ${tourMenuOpen ? 'rotate-180' : 'rotate-0'}`} />
+  </button>
+
+  {tourMenuOpen && (
+    <div className="ml-4 mt-2 space-y-2">
+      <Link
+        to="/tours/domestic"
+        className="block hover:text-yellow-400"
+        onClick={(e) => {
+          e.stopPropagation(); // Prevent parent button toggle interference
+          closeMenu();         // Close mobile menu
+        }}
+      >
+        🇵🇰 Domestic Tours
+      </Link>
+      <Link
+        to="/tours/international"
+        className="block hover:text-yellow-400"
+        onClick={(e) => {
+          e.stopPropagation();
+          closeMenu();
+        }}
+      >
+        International Tours
+      </Link>
+      <Link
+        to="/tours"
+        className="block hover:text-yellow-400"
+        onClick={(e) => {
+          e.stopPropagation();
+          closeMenu();
+        }}
+      >
+        All Tours
+      </Link>
+    </div>
+  )}
+</div>
+
 
           <Link to="/hotels" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Hotels</Link>
           <Link to="/destinations" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Destinations</Link>
