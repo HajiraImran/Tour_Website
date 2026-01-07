@@ -15,7 +15,7 @@ export default function DomesticTours() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/public/tours/domestic")
+.get(`${import.meta.env.VITE_API_URL}/api/public/tours/domestic`)
       .then((res) => setTours(res.data))
       .catch(console.error)
       .finally(() => setLoading(false));

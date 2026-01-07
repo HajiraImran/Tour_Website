@@ -15,7 +15,7 @@ export default function InternationalTours() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/public/tours/international")
+.get(`${import.meta.env.VITE_API_URL}/api/public/tours/international`)
       .then((res) => setTours(res.data))
       .catch(console.error)
       .finally(() => setLoading(false));

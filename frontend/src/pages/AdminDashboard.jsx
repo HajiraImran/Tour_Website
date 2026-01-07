@@ -75,10 +75,10 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!token) return window.location.href = "/admin/login";
 
-    axios
-      .get("http://localhost:5000/api/admin/tours", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    axios.get(`${import.meta.env.VITE_API_URL}/api/admin/tours`, {
+  headers: { Authorization: `Bearer ${token}` },
+})
+
       .then((res) => setTours(res.data))
       .catch(() => alert("Failed to fetch tours"))
       .finally(() => setLoading(false));
@@ -120,10 +120,11 @@ export default function AdminDashboard() {
       };
 
       const res = await axios.post(
-        "http://localhost:5000/api/admin/tours",
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  `${import.meta.env.VITE_API_URL}/api/admin/tours`,
+  payload,
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setTours([res.data, ...tours]);
       setShowModal(false);
@@ -163,9 +164,10 @@ export default function AdminDashboard() {
   ================================ */
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this tour?")) return;
-    await axios.delete(`http://localhost:5000/api/admin/tours/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/tours/${id}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
     setTours(tours.filter((t) => t._id !== id));
   };
 

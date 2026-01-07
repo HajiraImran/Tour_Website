@@ -36,9 +36,9 @@ export default function Destinations() {
     const fetchTours = async () => {
       try {
         const [localRes, intlRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/public/tours/domestic"),
-          axios.get("http://localhost:5000/api/public/tours/international"),
-        ]);
+          axios.get(`${import.meta.env.VITE_API_URL}/api/public/tours/domestic`),
+  axios.get(`${import.meta.env.VITE_API_URL}/api/public/tours/international`),
+]);
         setLocalTours(localRes.data);
         setIntlTours(intlRes.data);
       } catch (err) {

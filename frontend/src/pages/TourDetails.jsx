@@ -32,7 +32,7 @@ export default function TourDetails() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/public/tours/${id}`)
+.get(`${import.meta.env.VITE_API_URL}/api/public/tours/${id}`)
       .then((res) => {
         setTour(res.data);
         setLoading(false);
@@ -51,7 +51,7 @@ export default function TourDetails() {
   setQuoteLoading(true);
 
   try {
-    await axios.post("http://localhost:5000/api/public/get-quote", {
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/public/get-quote`, {
       name: quoteForm.name,
       email: quoteForm.email,
       tourId: tour?._id,

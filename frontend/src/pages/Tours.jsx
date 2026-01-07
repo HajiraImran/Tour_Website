@@ -15,7 +15,7 @@ export default function Tours() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/public/tours")
+.get(`${import.meta.env.VITE_API_URL}/api/public/tours`)
       .then((res) => setTours(res.data))
       .catch(console.error);
   }, []);

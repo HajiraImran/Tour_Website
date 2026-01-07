@@ -7,7 +7,7 @@ export default function CategoryPage() {
 
   useEffect(() => {
     // Fetch from backend — example API route
-    fetch(`http://localhost:5000/api/tours/category/${categoryName}`)
+   fetch(`${import.meta.env.VITE_API_URL}/api/tours/category/${categoryName}`)
       .then((res) => res.json())
       .then((data) => setTours(data))
       .catch(console.error);

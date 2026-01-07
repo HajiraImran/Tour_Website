@@ -98,7 +98,7 @@ useEffect(() => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/public/tours/domestic")
+.get(`${import.meta.env.VITE_API_URL}/api/public/tours/domestic`)
       .then((res) => setDomesticTours(res.data.slice(0, 3))) // show 3 tours on home
       .catch(console.error)
       .finally(() => setLoadingDomesticTours(false));
@@ -110,7 +110,7 @@ useEffect(() => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/public/tours/international")
+      .get(`${import.meta.env.VITE_API_URL}/api/public/tours/international`)
       .then((res) => setInternationalTours(res.data.slice(0, 3)))
       .catch(console.error)
       .finally(() => setLoadingInternationalTours(false));
