@@ -1,6 +1,6 @@
-import { Link, useLocation } from 'react-router-dom'
-import logo from '../assets/logos.png'
-import { useState, useEffect, useRef } from 'react'
+import { Link, useLocation } from 'react-router-dom';
+import logo from '../assets/logos.png';
+import { useState, useEffect, useRef } from 'react';
 import {
   FaFacebookF,
   FaInstagram,
@@ -10,43 +10,43 @@ import {
   FaChevronDown,
   FaMapMarkerAlt,
   FaWhatsapp
-} from "react-icons/fa"
-import { SiTiktok } from "react-icons/si"
+} from "react-icons/fa";
+import { SiTiktok } from "react-icons/si";
 
 export default function Navbar() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [tourMenuOpen, setTourMenuOpen] = useState(false)
-  const location = useLocation()
-  const tourRef = useRef(null)
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [tourMenuOpen, setTourMenuOpen] = useState(false);
+  const location = useLocation();
+  const tourRef = useRef(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken')
-    setIsAdminLoggedIn(!!token)
-  }, [location])
+    const token = localStorage.getItem('adminToken');
+    setIsAdminLoggedIn(!!token);
+  }, [location]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tourRef.current && !tourRef.current.contains(event.target)) {
-        setTourMenuOpen(false)
+        setTourMenuOpen(false);
       }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken')
-    setIsAdminLoggedIn(false)
-    window.location.href = '/'
-  }
+    localStorage.removeItem('adminToken');
+    setIsAdminLoggedIn(false);
+    window.location.href = '/';
+  };
 
   const closeMenu = () => {
-    setMenuOpen(false)
-    setTourMenuOpen(false)
-  }
+    setMenuOpen(false);
+    setTourMenuOpen(false);
+  };
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white shadow-lg h-20">
@@ -63,7 +63,6 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center space-x-6 h-full">
-
           <Link to="/" className={`${isActive('/') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Home</Link>
           <Link to="/about" className={`${isActive('/about') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>About</Link>
 
@@ -82,15 +81,33 @@ export default function Navbar() {
                 <div className="grid grid-cols-2 gap-4 p-4">
                   <div>
                     <h4 className="font-semibold mb-2">Domestic Tours</h4>
-                    <Link to="/tours/domestic" className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours/domestic') ? 'bg-gray-700 text-yellow-400' : ''}`} onClick={closeMenu}>🇵🇰 Domestic Tours</Link>
+                    <Link
+                      to="/tours/domestic"
+                      className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours/domestic') ? 'bg-gray-700 text-yellow-400' : ''}`}
+                      onClick={closeMenu}
+                    >
+                      🇵🇰 Domestic Tours
+                    </Link>
                   </div>
                   <div>
                     <h4 className="font-semibold mb-2">International Tours</h4>
-                    <Link to="/tours/international" className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours/international') ? 'bg-gray-700 text-yellow-400' : ''}`} onClick={closeMenu}>International Tours</Link>
+                    <Link
+                      to="/tours/international"
+                      className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours/international') ? 'bg-gray-700 text-yellow-400' : ''}`}
+                      onClick={closeMenu}
+                    >
+                      International Tours
+                    </Link>
                   </div>
                 </div>
                 <div className="border-t border-gray-700 p-2">
-                  <Link to="/tours" className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours') ? 'bg-gray-700 text-yellow-400' : ''}`} onClick={closeMenu}>All Tours</Link>
+                  <Link
+                    to="/tours"
+                    className={`block py-1 px-2 rounded hover:bg-gray-800 ${isActive('/tours') ? 'bg-gray-700 text-yellow-400' : ''}`}
+                    onClick={closeMenu}
+                  >
+                    All Tours
+                  </Link>
                 </div>
               </div>
             )}
@@ -100,7 +117,6 @@ export default function Navbar() {
           <Link to="/destinations" className={`${isActive('/destinations') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Destinations</Link>
           <Link to="/contact" className={`${isActive('/contact') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Contact</Link>
 
-          {/* Admin Links */}
           {isAdminLoggedIn && (
             <>
               <Link to="/admin/dashboard" className={`${isActive('/admin/dashboard') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Dashboard</Link>
@@ -131,51 +147,13 @@ export default function Navbar() {
           <Link to="/" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Home</Link>
           <Link to="/about" onClick={closeMenu} className="block text-lg hover:text-yellow-400">About</Link>
 
-          {/* Mobile Tours */}
-<div>
-  <button
-    onClick={() => setTourMenuOpen(!tourMenuOpen)}
-    className="w-full flex justify-between items-center text-lg hover:text-yellow-400"
-  >
-    Tours <FaChevronDown className={`transition-transform duration-300 ${tourMenuOpen ? 'rotate-180' : 'rotate-0'}`} />
-  </button>
-
-  {tourMenuOpen && (
-    <div className="ml-4 mt-2 space-y-2">
-      <Link
-        to="/tours/domestic"
-        className="block hover:text-yellow-400"
-        onClick={(e) => {
-          e.stopPropagation(); // Prevent parent button toggle interference
-          closeMenu();         // Close mobile menu
-        }}
-      >
-        🇵🇰 Domestic Tours
-      </Link>
-      <Link
-        to="/tours/international"
-        className="block hover:text-yellow-400"
-        onClick={(e) => {
-          e.stopPropagation();
-          closeMenu();
-        }}
-      >
-        International Tours
-      </Link>
-      <Link
-        to="/tours"
-        className="block hover:text-yellow-400"
-        onClick={(e) => {
-          e.stopPropagation();
-          closeMenu();
-        }}
-      >
-        All Tours
-      </Link>
+          {/* MOBILE TOURS FIXED */}
+         {/* Tours links directly, no toggle */}
+    <div className="ml-0 mt-2 space-y-2">
+      <Link to="/tours/domestic" onClick={closeMenu} className="block text-lg hover:text-yellow-400">🇵🇰 Domestic Tours</Link>
+      <Link to="/tours/international" onClick={closeMenu} className="block text-lg hover:text-yellow-400">International Tours</Link>
+      <Link to="/tours" onClick={closeMenu} className="block text-lg hover:text-yellow-400">All Tours</Link>
     </div>
-  )}
-</div>
-
 
           <Link to="/hotels" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Hotels</Link>
           <Link to="/destinations" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Destinations</Link>
@@ -193,6 +171,7 @@ export default function Navbar() {
         </div>
       )}
 
+      {/* Slide-down animation */}
       <style>{`
         @keyframes slideDown {
           0% { opacity: 0; transform: translateY(-10px); }
@@ -203,5 +182,5 @@ export default function Navbar() {
         }
       `}</style>
     </nav>
-  )
+  );
 }
