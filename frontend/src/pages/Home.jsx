@@ -32,7 +32,6 @@ import Testimonials from "../components/Testimonials";
 import TourCard from "../components/TourCard";
 import WhyChooseCard from "../components/WhyChooseCard";
 import Modal from "../components/Modal";
-import ContactPage from "../pages/Contact";
 import ContactForm from "../components/ContactForm";
 import GallerySection from "../components/GallerySection";
 
@@ -48,7 +47,7 @@ export default function Home() {
     "/videos/travels.mp4",
   ];
   const [currentVideo, setCurrentVideo] = useState(0);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -87,6 +86,7 @@ useEffect(() => {
   }
 }, [showPosterPopup]);
 
+        const [activeCard, setActiveCard] = useState(null);
 
 
 
@@ -167,6 +167,31 @@ useEffect(() => {
       icon: <GiWorld size={50} className="mb-4 text-violet-600" />,
     },
   ];
+  /* ---------------- WHY CHOOSE US ITEMS ---------------- */
+
+  const items = [
+          {
+            icon: "🌟",
+            title: "Exceptional Service",
+            desc: "From the moment you reach out, our team provides personalized support tailored to your needs, ensuring a seamless, stress-free, and unforgettable travel experience."
+          },
+          {
+            icon: "🏔️",
+            title: "Curated Experiences",
+            desc: "We take care of every travel detail, including flights, airport transfers, hotel bookings, and local transport to make your journey smooth and stress-free."
+          },
+          {
+            icon: "💎",
+            title: "Premium Quality",
+            desc: "We help you create unforgettable memories with guided tours, photography tips, cultural immersion, and unique local experiences."
+          },
+          {
+            icon: "🌍",
+            title: "Global & Local Tours",
+            desc: "Experience premium travel at competitive prices. Our hand-crafted itineraries provide exceptional value without compromising comfort or experience."
+          },
+        ];
+
 
   return (
     <div className="font-sans text-gray-800">
@@ -262,31 +287,6 @@ useEffect(() => {
 
       {/* Cards */}
       {(() => {
-        const items = [
-          {
-            icon: "🌟",
-            title: "Exceptional Service",
-            desc: "From the moment you reach out, our team provides personalized support tailored to your needs, ensuring a seamless, stress-free, and unforgettable travel experience."
-          },
-          {
-            icon: "🏔️",
-            title: "Curated Experiences",
-            desc: "We take care of every travel detail, including flights, airport transfers, hotel bookings, and local transport to make your journey smooth and stress-free."
-          },
-          {
-            icon: "💎",
-            title: "Premium Quality",
-            desc: "We help you create unforgettable memories with guided tours, photography tips, cultural immersion, and unique local experiences."
-          },
-          {
-            icon: "🌍",
-            title: "Global & Local Tours",
-            desc: "Experience premium travel at competitive prices. Our hand-crafted itineraries provide exceptional value without compromising comfort or experience."
-          },
-        ];
-
-        const [activeCard, setActiveCard] = useState(null);
-
         return items.map((item, i) => (
           <WhyChooseCard
             key={i}

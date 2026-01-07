@@ -209,7 +209,7 @@ export default function AboutPage() {
                       before:opacity-0 before:transition-opacity before:duration-500
                       hover:before:opacity-50">
         <span className="text-5xl mb-4">🌍</span>
-        <h3 className="text-3xl font-bold mb-2">50+</h3>
+        <h3 className="text-3xl font-bold mb-2">100+</h3>
         <p>Destinations</p>
       </div>
 
@@ -221,7 +221,7 @@ export default function AboutPage() {
                       before:opacity-0 before:transition-opacity before:duration-500
                       hover:before:opacity-50">
         <span className="text-5xl mb-4">✈️</span>
-        <h3 className="text-3xl font-bold mb-2">500+</h3>
+        <h3 className="text-3xl font-bold mb-2">1000+</h3>
         <p>Tours Organized</p>
       </div>
 
@@ -258,7 +258,7 @@ export default function AboutPage() {
                       before:opacity-0 before:transition-opacity before:duration-500
                       hover:before:opacity-50">
         <span className="text-5xl mb-4">🗺️</span>
-        <h3 className="text-3xl font-bold mb-2">150+</h3>
+        <h3 className="text-3xl font-bold mb-2">500+</h3>
         <p>Tour Packages</p>
       </div>
 
