@@ -34,17 +34,22 @@ import WhyChooseCard from "../components/WhyChooseCard";
 import Modal from "../components/Modal";
 import ContactForm from "../components/ContactForm";
 import GallerySection from "../components/GallerySection";
+import Bubbles from "../components/Bubbles";
 
 
 
 export default function Home() {
   /* ---------------- HERO VIDEOS ---------------- */
   const videos = [
-    "/videos/travel1.mp4",
-    "/videos/travel2.mp4",
+    "/videos/tour7.mp4",
+    "/videos/tour8.mp4",
+    "/videos/tour6.mp4",
+    "/videos/tour5.mp4",
     "/videos/travel3.mp4",
     "/videos/travel4.mp4",
-    "/videos/travels.mp4",
+    "/videos/travel1.mp4",
+    
+
   ];
   const [currentVideo, setCurrentVideo] = useState(0);
   
@@ -195,9 +200,12 @@ useEffect(() => {
 
   return (
     <div className="font-sans text-gray-800">
+      
+        <Bubbles />
 
       {/* ================= HERO ================= */}
       <section className="relative h-screen w-screen overflow-hidden">
+        
         {videos.map((vid, index) => (
           <video
             key={index}
@@ -414,8 +422,9 @@ useEffect(() => {
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">Our Stats</h2>
           <p className="text-gray-600 mb-12 max-w-3xl mx-auto">
-            We take pride in our journey. Here are some key statistics that reflect our experience and commitment.
-          </p>
+We take pride in our journey. Here are some key statistics that reflect our experience and commitment.
+Each number tells a story of trust, excellence, and unforgettable travel experiences crafted with care.
+From first-time explorers to seasoned travelers, our growing community inspires us to raise the bar every day.          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
 
             {/* Pie Chart */}

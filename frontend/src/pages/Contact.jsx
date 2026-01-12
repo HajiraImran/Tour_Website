@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import logo from "../assets/logos.png";
+import logo from "../assets/logosss.png";
 import { HiUser, HiMail, HiPencilAlt, HiChatAlt2 } from "react-icons/hi";
 
 import ContactForm from "../components/ContactForm";
@@ -83,12 +83,16 @@ export default function ContactPage() {
           ))}
 
           <div className="h-64 rounded-3xl overflow-hidden shadow-xl">
-            <iframe
-              src="https://maps.google.com/maps?q=Islamabad&t=&z=13&output=embed"
-              className="w-full h-full border-0"
-              loading="lazy"
-            ></iframe>
-          </div>
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15231.870445340514!2d73.1583536!3d33.5213031!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed763ecad973%3A0xf4fca7f81cc90808!2sWorld%20Trade%20Center%2C%20Islamabad%2C%20Pakistan!5e0!3m2!1sen!2s!4v1704922083456"
+    className="w-full h-full border-0"
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  ></iframe>
+</div>
+
+
         </div>
       </div>
 

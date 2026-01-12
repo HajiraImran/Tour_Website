@@ -6,7 +6,8 @@ node_modules/
 **/.env
 
 # ===== Build outputs =====
-
+dist/
+frontend/dist/
 
 # ===== Logs =====
 npm-debug.log*

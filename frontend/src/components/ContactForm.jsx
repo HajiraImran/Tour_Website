@@ -1,7 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-import logo from "../assets/logos.png";
-import { HiUser, HiMail, HiPencilAlt, HiChatAlt2 } from "react-icons/hi";
+import logo from "../assets/logosss.png";
+import {
+  HiUser,
+  HiMail,
+  HiPencilAlt,
+  HiChatAlt2,
+} from "react-icons/hi";
 
 export default function ContactForm({ onSuccess }) {
   const [formData, setFormData] = useState({
@@ -24,18 +29,16 @@ export default function ContactForm({ onSuccess }) {
     setLoading(true);
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/contact`, formData);
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/contact`,
+        formData
+      );
 
       setFormData({ name: "", email: "", subject: "", message: "" });
       setShowToast(true);
 
-      // toast auto hide
       setTimeout(() => setShowToast(false), 3000);
-
-      // modal auto close
-      if (onSuccess) {
-        setTimeout(onSuccess, 1800);
-      }
+      if (onSuccess) setTimeout(onSuccess, 1800);
     } catch (err) {
       setError("Failed to send message. Please try again.");
     } finally {
@@ -45,7 +48,7 @@ export default function ContactForm({ onSuccess }) {
 
   return (
     <>
-      {/* ✅ SUCCESS TOAST */}
+      {/* SUCCESS TOAST */}
       {showToast && (
         <div className="fixed top-6 right-6 z-50 bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl animate-slide-in">
           ✅ Message sent successfully!
@@ -54,7 +57,7 @@ export default function ContactForm({ onSuccess }) {
 
       <form
         onSubmit={handleSubmit}
-        className="p-10 rounded-3xl shadow-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white animate-gradient"
+        className="p-10 rounded-3xl shadow-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white"
       >
         <img src={logo} alt="Logo" className="h-28 mx-auto mb-8" />
 
@@ -91,15 +94,14 @@ export default function ContactForm({ onSuccess }) {
           onChange={handleChange}
         />
 
-        {/* BUTTON */}
         <button
           disabled={loading}
-          className={`w-full py-3 rounded-xl font-semibold flex justify-center items-center gap-3
-            ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-white text-gray-900 hover:opacity-90"
-            }`}
+          className={`w-full py-3 rounded-xl font-semibold flex justify-center items-center gap-3 transition
+          ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-white text-gray-900 hover:opacity-90"
+          }`}
         >
           {loading ? (
             <>
@@ -111,15 +113,16 @@ export default function ContactForm({ onSuccess }) {
           )}
         </button>
 
-        {error && <p className="text-red-500 text-center mt-3">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-center mt-3">{error}</p>
+        )}
       </form>
 
-      {/* ANIMATIONS */}
       <style>{`
         @keyframes slideIn {
           from {
             opacity: 0;
-            transform: translateX(50px);
+            transform: translateX(40px);
           }
           to {
             opacity: 1;
@@ -134,37 +137,83 @@ export default function ContactForm({ onSuccess }) {
   );
 }
 
-/* ================= INPUTS ================= */
+/* ================= FLOATING INPUT WITH UNDERLINE ================= */
 
 function FloatingInput({ icon, label, ...props }) {
   return (
-    <div className="relative mb-6">
-      <span className="absolute left-4 top-3 text-white/60 text-xl">{icon}</span>
+    <div className="relative mb-8">
+      <span className="absolute left-4 top-3.5 text-white/60 text-xl pointer-events-none">
+        {icon}
+      </span>
+
       <input
         {...props}
         required
-        className="peer w-full bg-white/10 border border-white/30 rounded-xl px-12 py-3 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-white"
-        placeholder={label}
+        placeholder=" "
+        className="peer w-full bg-transparent border-b border-white/30
+        px-12 py-3 text-white
+        focus:outline-none
+        transition-all duration-300"
       />
-      <label className="absolute left-12 top-3 text-white/60 text-sm peer-focus:-top-2 peer-focus:text-xs">
+
+      {/* UNDERLINE ANIMATION */}
+      <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white scale-x-0 origin-left transition-transform duration-300 peer-focus:scale-x-100"></span>
+
+      <label
+        className="absolute left-12 text-white/70 text-sm
+        transition-all duration-300 ease-out pointer-events-none
+
+        peer-placeholder-shown:top-3.5
+        peer-placeholder-shown:text-sm
+
+        peer-focus:-top-2
+        peer-focus:text-xs
+        peer-focus:text-white
+
+        -top-2 text-xs"
+      >
         {label}
       </label>
     </div>
   );
 }
 
+/* ================= FLOATING TEXTAREA WITH UNDERLINE ================= */
+
 function FloatingTextarea({ icon, label, ...props }) {
   return (
-    <div className="relative mb-6">
-      <span className="absolute left-4 top-4 text-white/60 text-xl">{icon}</span>
+    <div className="relative mb-8">
+      <span className="absolute left-4 top-4 text-white/60 text-xl pointer-events-none">
+        {icon}
+      </span>
+
       <textarea
         {...props}
         rows="6"
         required
-        className="peer w-full bg-white/10 border border-white/30 rounded-xl px-12 py-3 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-white"
-        placeholder={label}
+        placeholder=" "
+        className="peer w-full bg-transparent border-b border-white/30
+        px-12 py-3 text-white resize-none
+        focus:outline-none
+        transition-all duration-300"
       />
-      <label className="absolute left-12 top-4 text-white/60 text-sm peer-focus:-top-2 peer-focus:text-xs">
+
+      {/* UNDERLINE ANIMATION */}
+      <span className="absolute bottom-0 left-0 h-[2px] w-full bg-white scale-x-0 origin-left transition-transform duration-300 peer-focus:scale-x-100"></span>
+
+      <label
+        className="absolute left-12 text-white/70 text-sm
+        transition-all duration-300 ease-out pointer-events-none
+
+        peer-placeholder-shown:top-4
+        peer-placeholder-shown:text-sm
+
+        peer-focus:-top-2
+        peer-focus:text-xs
+        peer-focus:text-white
+
+        -top-2 text-xs"
+      >
         {label}
       </label>
     </div>

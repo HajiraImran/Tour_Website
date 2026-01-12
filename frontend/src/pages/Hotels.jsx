@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const hotels = [
   { name: "Starlit Skardu", location: "Skardu", price: "Rs. 24k - 38k", img: "/images/Skardus.jpeg" },
@@ -25,8 +25,46 @@ const locationColors = {
   "Fairy Meadows": "bg-emerald-600",
 };
 
+// Coordinates for OpenWeatherMap API
+const locationCoords = {
+  Skardu: { lat: 35.333, lon: 75.333 },
+  Hunza: { lat: 36.3, lon: 74.8 },
+  Gilgit: { lat: 35.920, lon: 74.308 },
+  "Fairy Meadows": { lat: 35.330, lon: 74.090 },
+};
+
+// Replace with your free API key from OpenWeatherMap
+const API_KEY = "360b607d50e7a3413f0f2321f33d777a";
+
 export default function Hotels() {
   const [filter, setFilter] = useState("All");
+  const [weatherData, setWeatherData] = useState({});
+  const [heroWeather, setHeroWeather] = useState(null);
+
+  // Fetch weather for all locations at once
+  useEffect(() => {
+    Object.keys(locationCoords).forEach(async (loc) => {
+      const { lat, lon } = locationCoords[loc];
+      try {
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+        );
+        const data = await res.json();
+        setWeatherData((prev) => ({ ...prev, [loc]: data }));
+      } catch (error) {
+        console.error(`Weather fetch error for ${loc}:`, error);
+      }
+    });
+  }, []);
+
+  // Update hero weather whenever filter changes
+  useEffect(() => {
+    if (filter === "All") {
+      setHeroWeather(null); // Or default to Skardu
+    } else {
+      setHeroWeather(weatherData[filter]);
+    }
+  }, [filter, weatherData]);
 
   const filteredHotels =
     filter === "All" ? hotels : hotels.filter((h) => h.location === filter);
@@ -46,33 +84,38 @@ export default function Hotels() {
           <p className="text-lg md:text-xl mt-2">
             Hand-picked stays across Northern Pakistan
           </p>
+
+          {heroWeather && (
+            <p className="mt-2 text-md md:text-lg font-semibold flex items-center gap-2">
+              🌡 {Math.round(heroWeather.main.temp)}°C, {heroWeather.weather[0].main} in {filter}
+            </p>
+          )}
         </div>
       </section>
 
-      {/* FILTERS (VISIBLE BELOW HERO) */}
-      {/* FILTERS (BELOW HERO) */}
-<div className="flex justify-center gap-4 flex-wrap mb-12">
-  {["All", "Skardu", "Hunza", "Gilgit", "Fairy Meadows"].map((loc) => (
-    <button
-      key={loc}
-      onClick={() => setFilter(loc)}
-      className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
-        filter === loc
-          ? "bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white shadow-lg"
-          : "border border-gray-300 text-gray-800 hover:bg-gray-100"
-      }`}
-    >
-      {loc}
-    </button>
-  ))}
-</div>
-
+      {/* FILTERS */}
+      <div className="flex justify-center gap-4 flex-wrap mb-12">
+        {["All", "Skardu", "Hunza", "Gilgit", "Fairy Meadows"].map((loc) => (
+          <button
+            key={loc}
+            onClick={() => setFilter(loc)}
+            className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
+              filter === loc
+                ? "bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white shadow-lg"
+                : "border border-gray-300 text-gray-800 hover:bg-gray-100"
+            }`}
+          >
+            {loc}
+          </button>
+        ))}
+      </div>
 
       {/* HOTELS GRID */}
       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {filteredHotels.map((hotel, i) => {
           const mapQuery = encodeURIComponent(`${hotel.name} ${hotel.location}`);
           const mapUrl = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+          const weather = weatherData[hotel.location];
 
           return (
             <div
@@ -87,11 +130,16 @@ export default function Hotels() {
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 />
                 <span
-                  className={`absolute top-3 left-3 text-white px-3 py-1 rounded-full text-sm ${
+                  className={`absolute top-3 left-3 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1 ${
                     locationColors[hotel.location] || "bg-gray-600"
                   }`}
                 >
-                  📍 {hotel.location}
+                  📍 {hotel.location}{" "}
+                  {weather && (
+                    <span className="text-xs">
+                      🌡 {Math.round(weather.main.temp)}°C, {weather.weather[0].main}
+                    </span>
+                  )}
                 </span>
               </div>
 

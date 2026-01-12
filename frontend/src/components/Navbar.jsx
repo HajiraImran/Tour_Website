@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../assets/logos.png';
+import logo from '../assets/logosss.png';
 import { useState, useEffect, useRef } from 'react';
 import {
   FaFacebookF,
@@ -9,7 +9,8 @@ import {
   FaTimes,
   FaChevronDown,
   FaMapMarkerAlt,
-  FaWhatsapp
+  FaWhatsapp,
+  FaClock
 } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 
@@ -17,14 +18,23 @@ export default function Navbar() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [tourMenuOpen, setTourMenuOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
   const location = useLocation();
   const tourRef = useRef(null);
 
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Admin login state
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     setIsAdminLoggedIn(!!token);
   }, [location]);
 
+  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (tourRef.current && !tourRef.current.contains(event.target)) {
@@ -49,20 +59,21 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
+    
     <nav className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-gray-800 via-gray-900 to-black text-white shadow-lg h-20">
-      
       <div className="flex justify-between items-center h-full px-6">
-
+        
         {/* Logo */}
-        <div className="flex items-center space-x-3 h-full">
-          <img src={logo} alt="Highland Escapes Logo" className="h-16 w-auto" />
-          <span className="font-semibold text-lg md:text-xl truncate">
-            Highland Escapes Travelers
-          </span>
+        <div className="flex items-center h-full">
+          <img
+            src={logo}
+            alt="Highland Escapes Logo"
+            className="h-16 md:h-18 w-auto object-contain"
+          />
         </div>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center space-x-6 h-full">
+        <div className="hidden md:flex items-center space-x-6 h-full leading-none">
           <Link to="/" className={`${isActive('/') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Home</Link>
           <Link to="/about" className={`${isActive('/about') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>About</Link>
 
@@ -73,7 +84,10 @@ export default function Navbar() {
               className="flex items-center gap-1 hover:text-gray-400"
             >
               Tours
-              <FaChevronDown className={`transition-transform duration-300 ${tourMenuOpen ? 'rotate-180' : 'rotate-0'}`} size={16}/>
+              <FaChevronDown
+                size={16}
+                className={`transition-transform duration-300 ${tourMenuOpen ? 'rotate-180' : 'rotate-0'}`}
+              />
             </button>
 
             {tourMenuOpen && (
@@ -120,23 +134,81 @@ export default function Navbar() {
           {isAdminLoggedIn && (
             <>
               <Link to="/admin/dashboard" className={`${isActive('/admin/dashboard') ? 'underline text-yellow-400' : 'hover:text-gray-400'}`}>Dashboard</Link>
-              <button onClick={handleLogout} className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition font-semibold">Logout</button>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition font-semibold"
+              >
+                Logout
+              </button>
             </>
           )}
         </div>
 
-        {/* Social Icons */}
-        <div className="hidden md:flex items-center space-x-3">
-          <a href="https://www.facebook.com/people/Highland-Escapes-Travelers/pfbid0366S8KuYVR8yETWDJgSkZa6XD8BmiKefRuvMXLnD2gffMpNHRWzqr3PEKDPYpETUVl/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500"><FaFacebookF size={16} /></a>
-          <a href="https://www.instagram.com/highlandescapestravelers/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500"><FaInstagram size={16} /></a>
-          <a href="https://www.tiktok.com/@highlandescapestraveler6" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300"><SiTiktok size={16} /></a>
-          <a href="https://www.youtube.com/channel/UCV6PtuV3PiQ6BSBbyCJGtTA" target="_blank" rel="noopener noreferrer" className="hover:text-red-600"><FaYoutube size={16} /></a>
-          <a href="https://wa.me/923043461111" target="_blank" rel="noopener noreferrer" className="hover:text-green-500"><FaWhatsapp size={16} /></a>
-          <a href="https://maps.app.goo.gl/T4hRfUVscPJhYGgs9?g_st=aw" target="_blank" rel="noopener noreferrer" className="hover:text-red-500"><FaMapMarkerAlt size={16} /></a>
+        {/* Time + Social Icons (Desktop) */}
+        <div className="hidden md:flex flex-col items-center h-full justify-center space-y-1">
+          {/* Current Time with Clock Icon */}
+          <span className="text-gray-300 text-sm font-mono flex items-center gap-1">
+            <FaClock className="text-yellow-400" /> {currentTime.toLocaleTimeString('en-US', { hour12: false })}
+          </span>
+
+          {/* Social Icons */}
+          <div className="flex items-center space-x-3">
+            <a
+              href="https://www.facebook.com/people/Highland-Escapes-Travelers/pfbid0366S8KuYVR8yETWDJgSkZa6XD8BmiKefRuvMXLnD2gffMpNHRWzqr3PEKDPYpETUVl/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-500 transition"
+            >
+              <FaFacebookF size={16} />
+            </a>
+            <a
+              href="https://www.instagram.com/highlandescapestravelers/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500 transition"
+            >
+              <FaInstagram size={16} />
+            </a>
+            <a
+              href="https://www.tiktok.com/@highlandescapestraveler6"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-300 transition"
+            >
+              <SiTiktok size={16} />
+            </a>
+            <a
+              href="https://www.youtube.com/channel/UCV6PtuV3PiQ6BSBbyCJGtTA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-red-600 transition"
+            >
+              <FaYoutube size={16} />
+            </a>
+            <a
+              href="https://wa.me/923043461111"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-500 transition"
+            >
+              <FaWhatsapp size={16} />
+            </a>
+            <a
+              href="https://maps.app.goo.gl/T4hRfUVscPJhYGgs9?g_st=aw"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-red-500 transition"
+            >
+              <FaMapMarkerAlt size={16} />
+            </a>
+          </div>
         </div>
 
         {/* Hamburger */}
-        <button className="md:hidden text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+        <button
+          className="md:hidden text-2xl flex items-center justify-center h-full"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
       </div>
@@ -144,34 +216,26 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-black/95 px-6 py-6 space-y-4">
+          {/* Current Time + Clock Icon for Mobile */}
+          <span className="text-gray-300 text-sm font-mono flex items-center gap-1 mb-2">
+            <FaClock className="text-yellow-400" /> {currentTime.toLocaleTimeString('en-US', { hour12: false })}
+          </span>
+
           <Link to="/" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Home</Link>
           <Link to="/about" onClick={closeMenu} className="block text-lg hover:text-yellow-400">About</Link>
 
-          {/* MOBILE TOURS FIXED */}
-         {/* Tours links directly, no toggle */}
-    <div className="ml-0 mt-2 space-y-2">
-      <Link to="/tours/domestic" onClick={closeMenu} className="block text-lg hover:text-yellow-400">🇵🇰 Domestic Tours</Link>
-      <Link to="/tours/international" onClick={closeMenu} className="block text-lg hover:text-yellow-400">International Tours</Link>
-      <Link to="/tours" onClick={closeMenu} className="block text-lg hover:text-yellow-400">All Tours</Link>
-    </div>
+          <div className="space-y-2">
+            <Link to="/tours/domestic" onClick={closeMenu} className="block text-lg hover:text-yellow-400">🇵🇰 Domestic Tours</Link>
+            <Link to="/tours/international" onClick={closeMenu} className="block text-lg hover:text-yellow-400">International Tours</Link>
+            <Link to="/tours" onClick={closeMenu} className="block text-lg hover:text-yellow-400">All Tours</Link>
+          </div>
 
           <Link to="/hotels" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Hotels</Link>
           <Link to="/destinations" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Destinations</Link>
           <Link to="/contact" onClick={closeMenu} className="block text-lg hover:text-yellow-400">Contact</Link>
-
-          {/* Mobile Socials */}
-          <div className="flex justify-center gap-4 pt-6 border-t border-gray-700">
-            <a href="https://www.facebook.com/people/Highland-Escapes-Travelers/pfbid0366S8KuYVR8yETWDJgSkZa6XD8BmiKefRuvMXLnD2gffMpNHRWzqr3PEKDPYpETUVl/" target="_blank" rel="noopener noreferrer"><FaFacebookF size={20} /></a>
-            <a href="https://www.instagram.com/highlandescapestravelers/" target="_blank" rel="noopener noreferrer"><FaInstagram size={20} /></a>
-            <a href="https://www.tiktok.com/@highlandescapestraveler6" target="_blank" rel="noopener noreferrer"><SiTiktok size={20} /></a>
-            <a href="https://www.youtube.com/channel/UCV6PtuV3PiQ6BSBbyCJGtTA" target="_blank" rel="noopener noreferrer"><FaYoutube size={20} /></a>
-            <a href="https://wa.me/923043461111" target="_blank" rel="noopener noreferrer"><FaWhatsapp size={20} /></a>
-            <a href="https://maps.app.goo.gl/T4hRfUVscPJhYGgs9?g_st=aw" target="_blank" rel="noopener noreferrer"><FaMapMarkerAlt size={20} /></a>
-          </div>
         </div>
       )}
 
-      {/* Slide-down animation */}
       <style>{`
         @keyframes slideDown {
           0% { opacity: 0; transform: translateY(-10px); }
